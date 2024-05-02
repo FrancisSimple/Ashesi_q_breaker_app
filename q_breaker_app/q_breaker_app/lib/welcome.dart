@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
+import 'package:q_breaker_app/student_path/student_login_page.dart';
 
 class WelcomePage extends StatefulWidget {
   const WelcomePage({super.key});
@@ -42,7 +43,10 @@ class _WelcomePageState extends State<WelcomePage> {
               children: [
               Column(
                 children: [
-                  IconButton(onPressed: (){}, icon: const Icon(LineAwesomeIcons.hammer,size: 45,)),
+                  IconButton(onPressed: (){
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => const StudentLogIn()));
+                  },
+                  icon: const Icon(LineAwesomeIcons.hammer,size: 45,)),
                   const Text('Student',style: TextStyle(fontSize: 20),),
                 ],
               ),

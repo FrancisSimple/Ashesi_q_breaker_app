@@ -20,11 +20,12 @@ void main() async {
 
   );
 
-  UserProvider userProvider = UserProvider();
+  //UserProvider userProvider = UserProvider();
   runApp(MultiProvider(
     
     providers: [
-      ChangeNotifierProvider(create: (_) => userProvider),
+      ChangeNotifierProvider(create: (_) => UserProvider()),
+      ChangeNotifierProvider(create: (_) => CafProvider()),
     ],
     child: const MyApp(),
   )

@@ -2,6 +2,9 @@
 import 'package:flutter/material.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 
+
+//making a clickable cafeteria card.
+//this is displayed on the student's home page.
 class CaferiaCard extends StatelessWidget {
   const CaferiaCard({super.key,
     required this.name,
@@ -76,7 +79,7 @@ class CaferiaCard extends StatelessWidget {
   }
 }
 
-
+//making list tile for drawer
 class MyListTile extends StatelessWidget {
   const MyListTile({super.key,
               this.leadIcon,
@@ -104,3 +107,4 @@ class MyListTile extends StatelessWidget {
               );
   }
 }
+//end of drawer list tile.

@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:q_breaker_app/fetching_data.dart';
 import 'package:q_breaker_app/student_path/student_page.dart';
@@ -101,19 +103,100 @@ class StudentLogInState extends State<StudentLogIn> {
 
                   String id = idController.text.trim();
                   String pin = pinController.text.trim();
-                  if (await fetchUserData(id, context.read<UserProvider>())){
+
+                  showDialog(
+                    context: context, 
+                    builder: (context){
+                      return  const Center(
+                        child:  SpinKitChasingDots(
+                          color: Colors.amber,
+                          size: 60,
+                          )
+                        );
+                    }
+                    );
+                  if (id.isNotEmpty && await fetchUserData(id, context.read<UserProvider>())){
 
                     final currentUser = Provider.of<UserProvider>(context,listen: false).currentUser;
                     if (pin == currentUser?['pin']){
-                      Navigator.push(context,MaterialPageRoute(builder: (context) => StudentPage()));
+                      //Removing the spinkit
+                      Navigator.of(context).pop();
+                      showDialog(
+                        context: context, 
+                        builder: (context){
+                          Future.delayed(const Duration(seconds: 2),(){
+                            Navigator.of(context).pop();
+                          });
+                          return AlertDialog(
+                            backgroundColor: Colors.red.shade100,
+                            
+                            content: const Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text('Great, you are in'),
+                                Icon(LineAwesomeIcons.thumbs_up_1, 
+                                color: Colors.green, size: 100,),
+                              ],
+                            ),
+                          );
+                        }
+                        );
+                      //Navigating to home page.
+                      Future.delayed(const Duration(seconds: 3),(){
+                        Navigator.push(context,MaterialPageRoute(builder: (context) => const StudentPage()));
+                      });
                       print('success');
                     }
                     else{
+                      //Removing the spinkit
+                      Navigator.of(context).pop();
+                      showDialog(
+                        context: context, 
+                        builder: (context){
+                          Future.delayed(Duration(seconds: 2),(){
+                            Navigator.of(context).pop();
+                          });
+                          return AlertDialog(
+                            backgroundColor: Colors.red.shade100,
+                            
+                            content: const Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text('Invalid Pin, try again...'),
+                                Icon(LineAwesomeIcons.exclamation_circle, 
+                                color: Colors.red, size: 50,),
+                              ],
+                            ),
+                          );
+                        }
+                        );
                       print('Incorrect pin');
                     }
 
                   }
                   else{
+                    //Removing the spinkit
+                    Navigator.of(context).pop();
+                      showDialog(
+                        context: context, 
+                        builder: (context){
+                          Future.delayed(Duration(seconds: 2),(){
+                            Navigator.of(context).pop();
+                          });
+                          return AlertDialog(
+                            backgroundColor: Colors.red.shade100,
+                            
+                            content: const Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text('Student ID does not exist'),
+                                Icon(LineAwesomeIcons.exclamation_circle, 
+                                color: Colors.red, size: 50,),
+                              ],
+                            ),
+                          );
+                        }
+                        );
                     print('student does not exist');
                   };
                 }, 

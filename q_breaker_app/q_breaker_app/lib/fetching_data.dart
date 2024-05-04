@@ -33,6 +33,8 @@ class UserProvider extends ChangeNotifier{
 }
 
 Future<bool> fetchUserData(String userId, UserProvider userProvider) async {
+
+  
   DocumentSnapshot userSnapshot = await FirebaseFirestore.instance.collection('students').doc(userId).get();
 
   if (userSnapshot.exists){

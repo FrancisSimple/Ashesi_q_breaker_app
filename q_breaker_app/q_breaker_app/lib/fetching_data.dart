@@ -1,5 +1,7 @@
 
 
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -8,10 +10,20 @@ import 'package:flutter/cupertino.dart';
 class User {
   final String id;
   final Map<String,dynamic> data;
+  String selectedCafId = '';
+  List<Food> foodsInSelection = [];
 
   User({required this.id,required this.data});
 
   dynamic operator [](String key) => data[key];
+
+  void updateCafId(String code){
+    selectedCafId = code;
+  }
+
+  String getCafId(){
+    return selectedCafId;
+  }
 
 }
 
@@ -19,10 +31,15 @@ class User {
 class Caf {
   final String id;
   final Map<String,dynamic> data;
+  List<Food> foods = [];
 
   Caf({required this.id,required this.data});
 
   dynamic operator [](String key) => data[key];
+
+  void addFood(String name, double price){
+    foods.add(Food(price: price, name: name));
+  }
 }
 
 //this is the cafeteria provider to use in the code.
@@ -81,7 +98,7 @@ Future<bool> fetchUserData(String userId, UserProvider userProvider) async {
 Future<bool> fetchCafData(String userId, CafProvider cafProvider) async {
 
   
-  DocumentSnapshot userSnapshot = await FirebaseFirestore.instance.collection('cafeterias').doc(userId).get();
+  DocumentSnapshot userSnapshot = await FirebaseFirestore.instance.collection('cafeteria').doc(userId).get();
 
   if (userSnapshot.exists){
 
@@ -95,4 +112,93 @@ Future<bool> fetchCafData(String userId, CafProvider cafProvider) async {
     return false;
     
   }
+}
+
+//creating the food class
+
+class Food{
+  final double price;
+  final String name;
+  int quantity = 0;
+  double netCost = 0;
+  bool isReady = true;
+
+  Food({required this.price,required this.name});
+
+  void addToQuantity(){
+    quantity++;
+  }
+
+  void reduceQuantity(){
+    if (quantity > 0){
+      quantity--;
+    }
+  }
+
+  String getName(){
+    return name;
+  }
+
+  double getPrice(){
+    return price;
+  }
+
+  int getQuantity(){
+    return quantity;
+  }
+
+  double getNetCost(){
+    netCost = quantity * price;
+    return netCost;
+  }
+
+  void changeReadyState(){
+    isReady = isReady ? false : true;
+  }
+
+}
+
+//end of food class.
+
+//start of the receipt class:
+
+class Receipt{
+  List<Food> foods;
+  String password = '';
+  double totalCost = 0;
+  String caf;
+  String studentName;
+  int studentId;
+
+  Receipt({required this.foods,required this.caf, required this.studentName, required this.studentId});
+
+  void generatePassword(){
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    final rand = Random();
+    password = String.fromCharCodes(Iterable.generate(5,(_) => chars.codeUnitAt(rand.nextInt(chars.length))));
+  }
+
+  String getPassword(){
+    return password;
+  }
+
+  double getTotalCost(){
+    for (Food food in foods){
+      totalCost += food.getNetCost();
+    }
+    return totalCost;
+  }
+
+  String getStudentName(){
+    return studentName;
+  }
+
+  int getStudentId(){
+    return studentId;
+  }
+
+  String getCafName(){
+    return caf;
+  }
+
 }

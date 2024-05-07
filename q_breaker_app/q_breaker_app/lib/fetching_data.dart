@@ -6,41 +6,75 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
+//Student class
 
 class User {
-  final String id;
-  final Map<String,dynamic> data;
+
+//data fields
+  String id, name = '';
+  Map<String,dynamic> data;
   String selectedCafId = '';
   List<Food> foodsInSelection = [];
-
-  User({required this.id,required this.data});
-
+  List<Receipt> receiptList = [];
+  int pin =0;
+  
   dynamic operator [](String key) => data[key];
 
+//end of data field
+
+
+//constructor
+  User({required this.id,required this.data});
+
+  //update
   void updateCafId(String code){
     selectedCafId = code;
   }
 
-  String getCafId(){
-    return selectedCafId;
+  //get cafeteria id
+  bool changedPin(int oldPin, int newPin){
+
+    pin = (pin == oldPin) ? newPin: oldPin;
+
+    return (newPin == pin) ? true:false;
   }
 
+  //add receipt to the list
+  void addReceipt(Receipt receipt){
+    receiptList.add(receipt);
+  }
+
+
+
+
+
 }
+//end of student class
+
+
 
 //creating a cafeteria class
 class Caf {
+
+  //data fields
   final String id;
   final Map<String,dynamic> data;
   List<Food> foods = [];
 
+  //constructor
   Caf({required this.id,required this.data});
 
+  //for storage of user fields.
   dynamic operator [](String key) => data[key];
 
+  //used to add a new food to menu
   void addFood(String name, double price){
     foods.add(Food(price: price, name: name));
   }
+
 }
+//end of cafeteria class
+
 
 //this is the cafeteria provider to use in the code.
 class CafProvider extends ChangeNotifier{
@@ -57,8 +91,9 @@ class CafProvider extends ChangeNotifier{
   }
 
 }
+//end of provider for cafeteria
 
-//Provider class: holds the engredients from the data (fridge) for students
+//Provider class for student data
 class UserProvider extends ChangeNotifier{
 
   User? _currentUser;
@@ -74,6 +109,7 @@ class UserProvider extends ChangeNotifier{
 
 }
 
+//fetch student's data
 Future<bool> fetchUserData(String userId, UserProvider userProvider) async {
 
   
@@ -92,9 +128,10 @@ Future<bool> fetchUserData(String userId, UserProvider userProvider) async {
     
   }
 }
+//end of method for fetching user data
+
 
 //fetching cafeteria data:
-
 Future<bool> fetchCafData(String userId, CafProvider cafProvider) async {
 
   
@@ -113,18 +150,23 @@ Future<bool> fetchCafData(String userId, CafProvider cafProvider) async {
     
   }
 }
+//end of method for fetching data of cafeterai.
+
 
 //creating the food class
-
 class Food{
+
+  //data field
   final double price;
   final String name;
   int quantity = 0;
   double netCost = 0;
   bool isReady = true;
 
+  //constructor
   Food({required this.price,required this.name});
 
+  //methods
   void addToQuantity(){
     quantity++;
   }
@@ -157,12 +199,13 @@ class Food{
   }
 
 }
-
 //end of food class.
 
-//start of the receipt class:
 
+//start of the receipt class:
 class Receipt{
+
+  //data field
   List<Food> foods;
   String password = '';
   double totalCost = 0;
@@ -170,8 +213,10 @@ class Receipt{
   String studentName;
   int studentId;
 
+  //constructor
   Receipt({required this.foods,required this.caf, required this.studentName, required this.studentId});
 
+  //methods
   void generatePassword(){
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     final rand = Random();
@@ -202,3 +247,4 @@ class Receipt{
   }
 
 }
+//end of receipt class

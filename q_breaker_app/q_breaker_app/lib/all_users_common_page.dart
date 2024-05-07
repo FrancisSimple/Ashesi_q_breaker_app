@@ -253,7 +253,7 @@ class _ReceiptCardState extends State<ReceiptCard> {
   Widget build(BuildContext context) {
     widget.newReceipt.generatePassword();
     return Container(
-      width: MediaQuery.of(context).size.width * 0.8,
+      width: MediaQuery.of(context).size.width * 0.5,
       child: Column(
         
         mainAxisAlignment: MainAxisAlignment.center,
@@ -288,11 +288,13 @@ class _ReceiptCardState extends State<ReceiptCard> {
           for (Food food in widget.newReceipt.foods)
               SizedBox(
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+                    Text(food.name,style: const TextStyle(fontWeight: FontWeight.bold)),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                      Text(food.name,style: const TextStyle(fontWeight: FontWeight.bold)),
+                      
                       Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [

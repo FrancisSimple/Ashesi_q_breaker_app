@@ -156,6 +156,7 @@ class _MyFoodCardState extends State<MyFoodCard> {
       padding: const EdgeInsets.all(10.0),
       child: Container(
         height: 400,
+        width: MediaQuery.of(context).size.width,
         child: Stack(
           children: [
             // Background image with some top padding
@@ -173,11 +174,12 @@ class _MyFoodCardState extends State<MyFoodCard> {
             ),
             // Container for information with some top padding
             Positioned(
-              top: 200.0, // Adjust padding as needed
+              top: 150.0, // Adjust padding as needed
               left: 0,
               right: 0,
-              bottom: 0,
+              bottom: 20,
               child: Container(
+                width: MediaQuery.of(context).size.width,
                 padding: const EdgeInsets.all(10.0),
                 decoration: BoxDecoration(
                   color: Colors.blue.withOpacity(0.8), // Semi-transparent background

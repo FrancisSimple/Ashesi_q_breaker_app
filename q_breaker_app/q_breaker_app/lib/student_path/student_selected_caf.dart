@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:q_breaker_app/all_users_common_page.dart';
 import 'package:q_breaker_app/fetching_data.dart';
+import 'package:q_breaker_app/student_path/receipt%20_page.dart';
 
 class StudentSelectedCafeteria extends StatefulWidget {
   const StudentSelectedCafeteria({super.key});
@@ -147,44 +148,7 @@ class _StudentSelectedCafeteriaState extends State<StudentSelectedCafeteria> {
     if (remainder >= 0 && foodsToBuy.isNotEmpty){
 
         newReceipt = Receipt(foods: foodsToBuy, caf: cafName, studentName: studentName, studentId: studentId);
-        showDialog(
-          context: context, 
-          builder: (context){
-            // Future.delayed(const Duration(seconds: 2),(){
-            //   Navigator.of(context).pop();
-            // });
-            return AlertDialog(
-              backgroundColor: Colors.red.shade100,
-              
-              content: ReceiptCard(newReceipt: newReceipt),
-              actions: [
-                TextButton(onPressed: (){
-                  Navigator.pop(context);
-                  for (Food food in foodList){
-                    setState(() {
-                      food.netCost = 0;
-                      food.quantity = 0;
-                      evaluatedCost = 0;
-                      foodList =[];
-                    });
-                  }
-                }, 
-                style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.white)), 
-                child: const Text('Reset'),),
-
-                TextButton(onPressed: (){
-                  Navigator.pop(context);
-                }, 
-                style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.blue)), 
-                child: const Text('Go back'),),
-
-                TextButton(onPressed: (){}, 
-                style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.green)), 
-                child: const Text('Order'),),
-              ],
-            );
-          }
-          );
+        Navigator.push(context, MaterialPageRoute(builder: (context)=> ReceiptPage(receipt: newReceipt)));
     }
 
     else if(remainder < 0 && foodsToBuy.isNotEmpty){

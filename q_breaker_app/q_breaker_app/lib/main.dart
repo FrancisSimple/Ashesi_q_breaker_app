@@ -16,7 +16,7 @@ void main() async {
   // Initialize Firebase based on platform
   await Firebase.initializeApp(
 
-    options: kIsWeb ? DefaultFirebaseOptions.currentPlatform : null,
+    options: DefaultFirebaseOptions.currentPlatform,
 
   );
 

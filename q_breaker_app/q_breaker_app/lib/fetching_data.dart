@@ -3,6 +3,7 @@
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -108,6 +109,46 @@ class UserProvider extends ChangeNotifier{
   }
 
 }
+
+
+Future<void> createStudent(String name,String email, String password) async{
+
+  //creating user with email and password using firebase authentication servces.
+  UserCredential userCredent = await FirebaseAuth.instance.createUserWithEmailAndPassword(email: email, password: password);
+
+  //let us now fetch the created user id:
+  String uid = userCredent.user!.uid;
+
+  //let us use the id to add to its collections:
+  DocumentReference userRef = FirebaseFirestore.instance.collection('students').doc(uid);
+  
+  //let us fill in the fields:
+  await userRef.set({
+    'uid': uid,
+    'name': name,
+    'email': email,
+    //...and the rest follows.
+
+
+  });
+
+  //for an inner collection, we need to create an inner path from previous address:
+  CollectionReference receipts = userRef.collection('Receipts');
+  //adding a document in that collection
+  //collectionreference.doc(the id).set(map); 
+  //if theree is no already set map to use, do as follows:
+  await receipts.doc('docId').set(
+    {
+      'name': 'frank'
+    }
+  );
+
+  //continue to pick another document, and adding any collection if needed.
+
+  
+
+}
+//end of creating a student
 
 //fetch student's data
 Future<bool> fetchUserData(String userId, UserProvider userProvider) async {

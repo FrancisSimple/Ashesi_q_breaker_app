@@ -1,7 +1,7 @@
 
-import 'package:flutter/cupertino.dart';
+// ignore_for_file: prefer_typing_uninitialized_variables, use_build_context_synchronously, duplicate_ignore
+
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:provider/provider.dart';
@@ -20,8 +20,12 @@ class CaferiaCard extends StatelessWidget {
   });
 
   //data field:
+  // ignore: duplicate_ignore
+  // ignore: prefer_typing_uninitialized_variables
   final name;
   final bool isOpen;
+  // ignore: duplicate_ignore
+  // ignore: prefer_typing_uninitialized_variables
   final contact;
   final mealNumber;
 
@@ -41,6 +45,7 @@ class CaferiaCard extends StatelessWidget {
             }
             );
         await Future.delayed(const Duration(milliseconds: 500));
+        // ignore: use_build_context_synchronously
         if(isOpen && await fetchCafData(name.replaceAll(' ',''), context.read<CafProvider>()))  {
           await Future.delayed(const Duration(milliseconds: 500)); // Delay for 100 milliseconds
           //Removing the spinkit
@@ -55,7 +60,7 @@ class CaferiaCard extends StatelessWidget {
         showDialog(
           context: context, 
           builder: (context){
-            Future.delayed(Duration(seconds: 2),(){
+            Future.delayed(const Duration(seconds: 2),(){
               Navigator.of(context).pop();
             });
             return AlertDialog(
@@ -154,7 +159,7 @@ class _MyFoodCardState extends State<MyFoodCard> {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(10.0),
-      child: Container(
+      child: SizedBox(
         height: 400,
         width: MediaQuery.of(context).size.width,
         child: Stack(
@@ -212,7 +217,7 @@ class _MyFoodCardState extends State<MyFoodCard> {
                          style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.red.withOpacity(0.9))),
                          child: const Icon(Icons.remove),
                          ),
-                        Text('Quantity: ${widget.food.quantity}'), // Update quantity based on state
+                        Text('Quantity: ${widget.food.getQuantity()}'), // Update quantity based on state
                         TextButton(onPressed: (){
                           setState(() {
                             widget.food.addToQuantity();

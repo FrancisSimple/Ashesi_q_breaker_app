@@ -24,7 +24,7 @@ class _StudentPageState extends State<StudentPage> {
     final currentUser = Provider.of<UserProvider>(context,listen: false).currentUser;
     return  Scaffold(
       appBar: AppBar(      
-        title: Text('Welcome ${currentUser!['Name']}'),
+        title: Text('Welcome ${currentUser!.name}'),
         centerTitle: true,
         actions: const [ Icon(Icons.search)],
         backgroundColor: Colors.amber.shade400,

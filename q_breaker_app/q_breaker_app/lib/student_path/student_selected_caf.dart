@@ -87,7 +87,7 @@ class _StudentSelectedCafeteriaState extends State<StudentSelectedCafeteria> {
                   }
                   setState(() {
                       currentCost =totalCost;
-                      print(currentCost);
+                      //print(currentCost);
                       }
                         ); 
                   },
@@ -98,7 +98,7 @@ class _StudentSelectedCafeteriaState extends State<StudentSelectedCafeteria> {
                   TextButton(onPressed: (){
                     double totalCost = 0;
                     for(Food food in currentCaf.foods){
-                      totalCost += food.netCost;
+                      totalCost += food.netCost!;
                     }
                     setState(() {
                       currentCost = totalCost;
@@ -114,15 +114,12 @@ class _StudentSelectedCafeteriaState extends State<StudentSelectedCafeteria> {
       ),
 
       body: SingleChildScrollView(
-        child: Container(
-          //height: MediaQuery.of(context).size.height,
-          child: Column(
-            children: [
-              for(Food food in currentCaf.foods)
-                MyFoodCard(food: food),
-               
-            ],
-          ),
+        child: Column(
+          children: [
+            for(Food food in currentCaf.foods)
+              MyFoodCard(food: food),
+             
+          ],
         ),
       ),
 
@@ -147,8 +144,8 @@ class _StudentSelectedCafeteriaState extends State<StudentSelectedCafeteria> {
     //these two conditions must be met to purchase
     if (remainder >= 0 && foodsToBuy.isNotEmpty){
 
-        newReceipt = Receipt(foods: foodsToBuy, caf: cafName, studentName: studentName, studentId: studentId);
-        Navigator.push(context, MaterialPageRoute(builder: (context)=> ReceiptPage(receipt: newReceipt)));
+        newReceipt = Receipt(foods: foodsToBuy, caf: cafName, studentName: studentName, studentId: studentId,isActive: true);
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> ReceiptPage(receipt: newReceipt)));
     }
 
     else if(remainder < 0 && foodsToBuy.isNotEmpty){
@@ -166,7 +163,7 @@ class _StudentSelectedCafeteriaState extends State<StudentSelectedCafeteria> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
-        duration: Duration(seconds: 3),
+        duration: const Duration(seconds: 3),
         behavior: SnackBarBehavior.floating,
         action: SnackBarAction(
           label: 'Close',

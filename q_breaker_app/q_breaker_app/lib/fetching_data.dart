@@ -15,7 +15,7 @@ class User {
   //Map<String,dynamic> data;
   String  name;
   String status;
-  List<Receipt>? receiptList;
+  List<Receipt> receiptList = [];
   int pin;
   bool accountStatus;
   Map<String, dynamic>? data;
@@ -26,9 +26,7 @@ class User {
 
 
 //constructor
-  User({required this.id,required this.name,required this.pin, required this.accountStatus, this.receiptList,required this.status,this.data});
-
-  
+  User({required this.id,required this.name,required this.pin, required this.accountStatus,required this.status,this.data});
 
   void setTodayBalance(){
     todayBalance = this['Today\'s balance'];
@@ -44,7 +42,7 @@ class User {
 
   //add receipt to the list
   void addReceipt(Receipt receipt){
-    receiptList!.add(receipt);
+    receiptList.add(receipt);
   }
 
   String getFinancialStatus(){
@@ -54,47 +52,18 @@ class User {
 
 
 
-  Future<bool> updateDatabaseReceipts(double change) async {
+  Future<bool> updateDatabaseReceipts() async {
     
-    List databaseReceiptArray = [];
-    for(Receipt receipt in receiptList!){
-      List databaseFoodArray =[];
+    final CollectionReference receiptCollection = FirebaseFirestore.instance.collection('students').doc(id.toString()).collection('receipts');
 
-      for (Food food in receipt.foods){
+    // QuerySnapshot allReceiptsSnap = await receiptCollection.get();
+    // for (DocumentSnapshot doc in allReceiptsSnap.docs){
+    //   await doc.reference.delete();
+    // }
 
-        Map<String, dynamic> databaseFood ={
-          'foodName': food.name,
-          'quantity': food.quantity,
-          'unitPrice': food.price,
-
-        };
-        databaseFoodArray.add(databaseFood);
-      }
-
-      Map<String, dynamic> databaseReceipt ={
-
-        'cafeteriaName': receipt.getCafName(),
-        'isActive': receipt.isActive,
-        'password': receipt.getPassword(),
-        'studentId': receipt.getStudentId(),
-        'studentName': receipt.getStudentName(),
-        'foods': databaseFoodArray,        
-      };
-
-      databaseReceiptArray.add(databaseReceipt);
-
-
+    for (Receipt receipt in receiptList){
+      await receiptCollection.add(receipt.toJson());
     }
-
-    DocumentReference docRef = FirebaseFirestore.instance.collection('students').doc(id.toString());
-    print(docRef);
-    await docRef.update({
-
-      'receipts': databaseReceiptArray,
-      'Today\'s balance': change,
-
-    });
-    
     
     return true;
   }
@@ -223,23 +192,23 @@ Future<bool> fetchUserData(String userId, UserProvider userProvider) async {
     bool accountStatus = userSnapshot['accountActive'];
     
     //getting list data fields
-    List<Receipt> receipts = [];
-    if(userSnapshot['receipts'].isEmpty){
+    // List<Receipt> receipts = [];
+    // if(userSnapshot['receipts'].isEmpty){
 
-      for(var receipt in userSnapshot['receipts']){
-        List<Food> foods = [];
-        for(var food in receipt['foods']){
-          Food meal = Food(price: food['unitPrice'], name: food['foodName'], quantity: food['quantity']);
-          foods.add(meal);
-        }
-        Receipt thisReceipt = Receipt(foods: foods, caf: receipt['cafeteriaName'], studentName: receipt['studentName'], studentId: receipt['studentId'], isActive: receipt['isActive'], password: receipt['password']);
-        receipts.add(thisReceipt);
-      }
+    //   for(var receipt in userSnapshot['receipts']){
+    //     List<Food> foods = [];
+    //     for(var food in receipt['foods']){
+    //       Food meal = Food(price: food['unitPrice'], name: food['foodName'], quantity: food['quantity']);
+    //       foods.add(meal);
+    //     }
+    //     Receipt thisReceipt = Receipt(foods: foods, caf: receipt['cafeteriaName'], studentName: receipt['studentName'], studentId: receipt['studentId'], isActive: receipt['isActive'], password: receipt['password']);
+    //     receipts.add(thisReceipt);
+    //   }
 
-    }
+    // }
     //provided receipt list is empty:
 
-    User user = User(id: id,name: name,pin: pin,accountStatus: accountStatus,receiptList: receipts,status: userSnapshot['status'],data: userSnapshot.data() as Map<String,dynamic>);
+    User user = User(id: id,name: name,pin: pin,accountStatus: accountStatus,status: userSnapshot['status'],data: userSnapshot.data() as Map<String,dynamic>);
     userProvider.setCurrentUser(user);
     return true;
 }
@@ -289,6 +258,30 @@ class Food{
   Food({required this.price,required this.name, this.quantity,this.netCost});
 
   //methods
+
+Map<String,dynamic> toJson(){
+  return {
+    'price': price,
+    'name': name,
+    'quantity': quantity,
+    'netCost': netCost,
+  };
+}
+//end of food to json file method.
+
+//fetching and creating a food object from the json file.
+factory Food.fromJson(Map<String,dynamic> json){
+  return Food(
+    price: json['price'],
+    name:json['name'],
+    quantity:json['quantity'],
+    netCost: json['netCost'],
+  );
+}
+//end of making food object from the database.
+
+
+
   void addToQuantity(){
     quantity =(quantity != null)?quantity! + 1:1;
   }
@@ -339,7 +332,37 @@ class Receipt{
   //constructor
   Receipt({required this.foods,required this.caf, required this.studentName, required this.studentId, required this.isActive,this.password});
 
+
+//Json file creation
+
+Map<String,dynamic> toJson(){
+  return {
+    'cafeteriaName':caf,
+    'password': password,
+    'studentId': studentId,
+    'isActive': isActive,
+    'studentName': studentName,
+    'totalCost': totalCost,
+    'foods': foods.map((food)=>food.toJson()).toList(),
+  };
+}
+
+//fetching receipt object from the database
+factory Receipt.fromMap(Map<String,dynamic> json){
+  return Receipt(
+    caf: json['cafeteriaName'],
+    isActive: json['isActive'],
+    studentId: json['studentId'],
+    studentName: json['studentName'],
+    password: json['password'],
+    foods: List<Food>.from(json['foods'].map((foodMap)=>Food.fromJson(foodMap))),
+  );
+}
+
+
   //methods
+
+
   void generatePassword(){
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     final rand = Random();

@@ -46,7 +46,7 @@ class _ReceiptPageState extends State<ReceiptPage> {
                     //approve receipt button
                     TextButton(onPressed: () async{
                       currentUser!.addReceipt(widget.receipt);
-                      currentUser.updateDatabaseReceipts(currentUser['Today\'s balance'] - widget.receipt.getTotalCost());
+                      currentUser.updateDatabaseReceipts();
                       await fetchUserData(currentUser.id.toString(), context.read<UserProvider>());
                       Navigator.pushReplacement(context, MaterialPageRoute(builder: ((context) => StudentSelectedCafeteria())));
                     }, style: ButtonStyle(

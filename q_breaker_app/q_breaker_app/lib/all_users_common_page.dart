@@ -214,7 +214,7 @@ class _MyFoodCardState extends State<MyFoodCard> {
                             widget.food.reduceQuantity();
                           });
                         },                         
-                         style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.red.withOpacity(0.9))),
+                         style: ButtonStyle(backgroundColor: WidgetStateProperty.all<Color>(Colors.red.withOpacity(0.9))),
                          child: const Icon(Icons.remove),
                          ),
                         Text('Quantity: ${widget.food.getQuantity()}'), // Update quantity based on state
@@ -224,7 +224,7 @@ class _MyFoodCardState extends State<MyFoodCard> {
                           });
                           
                         },                         
-                         style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.yellow.withOpacity(0.9))),
+                         style: ButtonStyle(backgroundColor: WidgetStateProperty.all<Color>(Colors.yellow.withOpacity(0.9))),
                          child: const Icon(Icons.add),
                          ),
                       ],

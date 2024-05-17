@@ -12,6 +12,8 @@ class StudentPage extends StatefulWidget {
   State<StudentPage> createState() => _StudentPageState();
 }
 
+
+
 class _StudentPageState extends State<StudentPage> {
   final List cards =[
     const Center(child: CaferiaCard(name: 'Big Ben',mealNumber: '6',isOpen: true,contact: 'Akonor Down',),),
@@ -21,7 +23,11 @@ class _StudentPageState extends State<StudentPage> {
   ];
   @override
   Widget build(BuildContext context) {
-    final currentUser = Provider.of<UserProvider>(context,listen: false).currentUser;
+    
+    final currentUser = Provider.of<UserProvider>(context,listen: true).currentUser;
+    // ()async{
+    //   await fetchUserData(currentUser!.id.toString(), context.read<UserProvider>());
+    // };
     return  Scaffold(
       appBar: AppBar(      
         title: Text('Welcome ${currentUser!.name}'),

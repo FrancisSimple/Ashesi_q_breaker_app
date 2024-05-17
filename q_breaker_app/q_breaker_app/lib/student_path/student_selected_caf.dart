@@ -18,6 +18,12 @@ class _StudentSelectedCafeteriaState extends State<StudentSelectedCafeteria> {
   @override
   void initState() {
     super.initState();
+    () async{
+
+      final mycurrentUser = Provider.of<UserProvider>(context,listen: true).currentUser;
+      await fetchUserData(mycurrentUser!.id.toString(), context.read<UserProvider>());
+
+    };
     final currentCaf = Provider.of<CafProvider>(context, listen: false).currentUser;
     currentCaf!.addFood('Plain Rice and chicken', 20);
     currentCaf.addFood('Omutuo', 25);
@@ -28,8 +34,9 @@ class _StudentSelectedCafeteriaState extends State<StudentSelectedCafeteria> {
   @override
   Widget build(BuildContext context) {
     
+    
 
-    final currentUser = Provider.of<UserProvider>(context,listen: false).currentUser;
+    final currentUser = Provider.of<UserProvider>(context,listen: true).currentUser;
     final currentCaf = Provider.of<CafProvider>(context,listen: false).currentUser;
     double potentialRemainder = currentUser!['Today\'s balance'] - currentCost;
     
@@ -91,7 +98,7 @@ class _StudentSelectedCafeteriaState extends State<StudentSelectedCafeteria> {
                       }
                         ); 
                   },
-                  style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.grey.withOpacity(0.9))),
+                  style: ButtonStyle(backgroundColor: WidgetStateProperty.all<Color>(Colors.grey.withOpacity(0.9))),
                    child: const Text('Evaluate cost',style: TextStyle(color: Colors.white),),
                   
                   ),
@@ -104,7 +111,7 @@ class _StudentSelectedCafeteriaState extends State<StudentSelectedCafeteria> {
                       currentCost = totalCost;
                     });
                     issueReceipt(currentUser['Today\'s balance'], currentCost, currentCaf.foods, currentUser['Name'], currentCaf['name'], currentUser['id']);
-                  },style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.green.withOpacity(0.9))), child: const Text('Get Receipt')),
+                  },style: ButtonStyle(backgroundColor: WidgetStateProperty.all<Color>(Colors.green.withOpacity(0.9))), child: const Text('Get Receipt')),
                 ],
               ),
             )

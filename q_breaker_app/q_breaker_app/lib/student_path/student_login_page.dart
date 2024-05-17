@@ -88,11 +88,12 @@ class StudentLogInState extends State<StudentLogIn> {
               ElevatedButton(
                 
                 style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.resolveWith<Color>((states) => 
+                  backgroundColor: WidgetStateProperty.resolveWith<Color>((states) => 
                   Colors.green.shade200,
                   
                   ),
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                  shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                    
                     RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     )

@@ -20,17 +20,13 @@ class User {
   bool accountStatus;
   Map<String, dynamic>? data;
   dynamic operator [](String key) => data![key];
-  double todayBalance = 0;
+  
 
 //end of data field
 
 
 //constructor
   User({required this.id,required this.name,required this.pin, required this.accountStatus,required this.status,this.data});
-
-  void setTodayBalance(){
-    todayBalance = this['Today\'s balance'];
-  }
 
 
   bool changedPin(int oldPin, int newPin){
@@ -50,8 +46,6 @@ class User {
   }
 
 
-
-
   Future<bool> updateDatabaseReceipts() async {
     
     final CollectionReference receiptCollection = FirebaseFirestore.instance.collection('students').doc(id.toString()).collection('receipts');
@@ -60,10 +54,21 @@ class User {
     // for (DocumentSnapshot doc in allReceiptsSnap.docs){
     //   await doc.reference.delete();
     // }
+    double currentCost = 0;
 
     for (Receipt receipt in receiptList){
+
       await receiptCollection.add(receipt.toJson());
+      currentCost += receipt.getTotalCost();
+
     }
+    
+
+    final studentDoc = FirebaseFirestore.instance.collection('students').doc(id.toString());
+    studentDoc.update({
+      'Today\'s balance': data!['Today\'s balance'] - currentCost,
+      'Account balance': data!['Account balance'] - currentCost,
+    });
     
     return true;
   }
@@ -126,6 +131,33 @@ class UserProvider extends ChangeNotifier{
     _currentUser = user;
     notifyListeners();
 
+  }
+  Future<bool> updateDatabaseReceipts(int id,List<Receipt> receiptList) async {
+    
+    final CollectionReference receiptCollection = FirebaseFirestore.instance.collection('students').doc(id.toString()).collection('receipts');
+
+    // QuerySnapshot allReceiptsSnap = await receiptCollection.get();
+    // for (DocumentSnapshot doc in allReceiptsSnap.docs){
+    //   await doc.reference.delete();
+    // }
+    double currentCost = 0;
+    for (Receipt receipt in receiptList){
+
+      await receiptCollection.add(receipt.toJson());
+      currentCost += receipt.getTotalCost();
+
+    }
+    
+
+    final studentDoc = FirebaseFirestore.instance.collection('students').doc(id.toString());
+    studentDoc.update({
+      'Today\'s balance': _currentUser!.data!['Today\'s balance'] - currentCost,
+      'Account balance': _currentUser!.data!['Account balance'] - currentCost,
+    });
+    currentUser!.data!['Today\'s balance'] -= currentCost;
+    currentUser!.data!['Account balance'] -= currentCost;
+    notifyListeners();
+    return true;
   }
 
 }
@@ -309,6 +341,10 @@ factory Food.fromJson(Map<String,dynamic> json){
     return netCost!;
   }
 
+  void resetQuantity(){
+    quantity = 0;
+  }
+
   void changeReadyState(){
     isReady = isReady ? false : true;
   }
@@ -374,6 +410,7 @@ factory Receipt.fromMap(Map<String,dynamic> json){
   }
 
   double getTotalCost(){
+    totalCost = 0;
     for (Food food in foods){
       totalCost += food.getNetCost();
     }

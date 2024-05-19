@@ -18,6 +18,12 @@ class _StudentSelectedCafeteriaState extends State<StudentSelectedCafeteria> {
   @override
   void initState() {
     super.initState();
+    () async{
+
+      final mycurrentUser = Provider.of<UserProvider>(context,listen: true).currentUser;
+      await fetchUserData(mycurrentUser!.id.toString(), context.read<UserProvider>());
+
+    };
     final currentCaf = Provider.of<CafProvider>(context, listen: false).currentUser;
     currentCaf!.addFood('Plain Rice and chicken', 20);
     currentCaf.addFood('Omutuo', 25);
@@ -28,8 +34,9 @@ class _StudentSelectedCafeteriaState extends State<StudentSelectedCafeteria> {
   @override
   Widget build(BuildContext context) {
     
+    
 
-    final currentUser = Provider.of<UserProvider>(context,listen: false).currentUser;
+    final currentUser = Provider.of<UserProvider>(context,listen: true).currentUser;
     final currentCaf = Provider.of<CafProvider>(context,listen: false).currentUser;
     double potentialRemainder = currentUser!['Today\'s balance'] - currentCost;
     
@@ -91,14 +98,14 @@ class _StudentSelectedCafeteriaState extends State<StudentSelectedCafeteria> {
                       }
                         ); 
                   },
-                  style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.grey.withOpacity(0.9))),
+                  style: ButtonStyle(backgroundColor: WidgetStateProperty.all<Color>(Colors.grey.withOpacity(0.9))),
                    child: const Text('Evaluate cost',style: TextStyle(color: Colors.white),),
                   
                   ),
                   TextButton(onPressed: (){
                     double totalCost = 0;
                     for(Food food in currentCaf.foods){
-                      totalCost += food.netCost;
+                      totalCost += food.netCost!;
                     }
                     setState(() {
                       currentCost = totalCost;
@@ -114,15 +121,12 @@ class _StudentSelectedCafeteriaState extends State<StudentSelectedCafeteria> {
       ),
 
       body: SingleChildScrollView(
-        child: Container(
-          //height: MediaQuery.of(context).size.height,
-          child: Column(
-            children: [
-              for(Food food in currentCaf.foods)
-                MyFoodCard(food: food),
-               
-            ],
-          ),
+        child: Column(
+          children: [
+            for(Food food in currentCaf.foods)
+              MyFoodCard(food: food),
+             
+          ],
         ),
       ),
 
@@ -147,8 +151,8 @@ class _StudentSelectedCafeteriaState extends State<StudentSelectedCafeteria> {
     //these two conditions must be met to purchase
     if (remainder >= 0 && foodsToBuy.isNotEmpty){
 
-        newReceipt = Receipt(foods: foodsToBuy, caf: cafName, studentName: studentName, studentId: studentId);
-        Navigator.push(context, MaterialPageRoute(builder: (context)=> ReceiptPage(receipt: newReceipt)));
+        newReceipt = Receipt(foods: foodsToBuy, caf: cafName, studentName: studentName, studentId: studentId,isActive: true);
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> ReceiptPage(receipt: newReceipt)));
     }
 
     else if(remainder < 0 && foodsToBuy.isNotEmpty){
@@ -166,7 +170,7 @@ class _StudentSelectedCafeteriaState extends State<StudentSelectedCafeteria> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
-        duration: Duration(seconds: 3),
+        duration: const Duration(seconds: 3),
         behavior: SnackBarBehavior.floating,
         action: SnackBarAction(
           label: 'Close',

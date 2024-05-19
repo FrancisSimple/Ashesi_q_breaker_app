@@ -1,7 +1,6 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:provider/provider.dart';
@@ -37,7 +36,7 @@ class StudentLogInState extends State<StudentLogIn> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Container(
+              SizedBox(
               height: 300,
               width: 300,
 
@@ -89,11 +88,12 @@ class StudentLogInState extends State<StudentLogIn> {
               ElevatedButton(
                 
                 style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.resolveWith<Color>((states) => 
+                  backgroundColor: WidgetStateProperty.resolveWith<Color>((states) => 
                   Colors.green.shade200,
                   
                   ),
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                  shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                    
                     RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     )
@@ -118,7 +118,7 @@ class StudentLogInState extends State<StudentLogIn> {
                   if (id.isNotEmpty && await fetchUserData(id, context.read<UserProvider>())){
 
                     final currentUser = Provider.of<UserProvider>(context,listen: false).currentUser;
-                    if (pin == currentUser?['pin']){
+                    if (pin == currentUser?['pin'].toString()){
                       //Removing the spinkit
                       Navigator.of(context).pop();
                       showDialog(
@@ -145,7 +145,6 @@ class StudentLogInState extends State<StudentLogIn> {
                       Future.delayed(const Duration(seconds: 3),(){
                         Navigator.push(context,MaterialPageRoute(builder: (context) => const StudentPage()));
                       });
-                      print('success');
                     }
                     else{
                       //Removing the spinkit
@@ -153,7 +152,7 @@ class StudentLogInState extends State<StudentLogIn> {
                       showDialog(
                         context: context, 
                         builder: (context){
-                          Future.delayed(Duration(seconds: 2),(){
+                          Future.delayed(const Duration(seconds: 2),(){
                             Navigator.of(context).pop();
                           });
                           return AlertDialog(
@@ -170,7 +169,6 @@ class StudentLogInState extends State<StudentLogIn> {
                           );
                         }
                         );
-                      print('Incorrect pin');
                     }
 
                   }
@@ -180,7 +178,7 @@ class StudentLogInState extends State<StudentLogIn> {
                       showDialog(
                         context: context, 
                         builder: (context){
-                          Future.delayed(Duration(seconds: 2),(){
+                          Future.delayed(const Duration(seconds: 2),(){
                             Navigator.of(context).pop();
                           });
                           return AlertDialog(
@@ -197,8 +195,7 @@ class StudentLogInState extends State<StudentLogIn> {
                           );
                         }
                         );
-                    print('student does not exist');
-                  };
+                  }
                 }, 
                 child: const Text('Enter to Break Q')
                 ),

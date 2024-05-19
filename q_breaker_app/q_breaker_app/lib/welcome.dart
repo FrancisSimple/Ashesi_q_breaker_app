@@ -27,7 +27,7 @@ class _WelcomePageState extends State<WelcomePage> {
             const SizedBox(height: 20),
             const Text('Welcome Q-Breaker',style: TextStyle(fontSize: 25),),
             const SizedBox(height: 20),
-            Container(
+            SizedBox(
               height: 300,
               width: 300,
 

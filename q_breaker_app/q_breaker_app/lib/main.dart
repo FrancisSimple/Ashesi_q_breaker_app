@@ -42,7 +42,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return const MaterialApp(
       title: 'Q-Breaker App',
-      
+      debugShowCheckedModeBanner: false,
       home: WelcomePage(),
     );
   }

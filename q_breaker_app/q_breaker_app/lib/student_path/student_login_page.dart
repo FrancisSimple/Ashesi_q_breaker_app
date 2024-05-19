@@ -15,211 +15,205 @@ class StudentLogIn extends StatefulWidget {
 }
 
 class StudentLogInState extends State<StudentLogIn> {
-
   //controllers for the text fields
   TextEditingController idController = TextEditingController();
   TextEditingController pinController = TextEditingController();
 
   //Log in validity method
-  Future<void> checkLogin() async {
-    
-  }
-
+  Future<void> checkLogin() async {}
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar:AppBar() ,
-      body: SafeArea(child: 
-        Container(
-          color: Colors.blue.shade200,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SizedBox(
-              height: 300,
-              width: 300,
+      appBar: AppBar(),
+      body: SafeArea(
+          child: Container(
+        color: Colors.blue.shade200,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SizedBox(
+                height: 300,
+                width: 300,
+                child: ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: Image.asset('assets/qlogo.jpeg'))),
+            const SizedBox(height: 20),
 
-              child:  ClipRRect(
-                borderRadius: BorderRadius.circular(10),
-                child: Image.asset('assets/qlogo.jpeg'))
-              ),
-              const SizedBox(height: 20),
+            const Text(
+              'Enter your credentials',
+              style: TextStyle(fontSize: 30),
+            ),
+            const SizedBox(),
 
-              const Text('Enter your credentials',style: TextStyle(fontSize: 30),),
-              const SizedBox(),
-
-              //ID entry field
-              Padding(
-                padding: const EdgeInsets.all(15.0),
-                child: TextField(
-                  onChanged: (value){},
-                  controller: idController,
-                  decoration: InputDecoration(
-                    contentPadding: const EdgeInsets.all(10),
-                    hintText: 'Enter student ID',
-                    label: const Text('Your ID goes here'),
-                    enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
-                    
-                  ),
+            //ID entry field
+            Padding(
+              padding: const EdgeInsets.all(15.0),
+              child: TextField(
+                onChanged: (value) {},
+                controller: idController,
+                decoration: InputDecoration(
+                  contentPadding: const EdgeInsets.all(10),
+                  hintText: 'Enter student ID',
+                  label: const Text('Your ID goes here'),
+                  enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20)),
                 ),
               ),
-              const SizedBox(),
+            ),
+            const SizedBox(),
 
-              //Pin entry field
-              Padding(
-                padding: const EdgeInsets.all(15.0),
-                child: TextField(
-                  onChanged: (value){},
-                  controller: pinController,
-                  obscureText: true,
-                  decoration: InputDecoration(
-                    contentPadding: const EdgeInsets.all(10),
-                    hintText: 'Enter PIN',
-                    label: const Text('Your PIN goes here'),
-                    enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
-                    
-                  ),
+            //Pin entry field
+            Padding(
+              padding: const EdgeInsets.all(15.0),
+              child: TextField(
+                onChanged: (value) {},
+                controller: pinController,
+                obscureText: true,
+                decoration: InputDecoration(
+                  contentPadding: const EdgeInsets.all(10),
+                  hintText: 'Enter PIN',
+                  label: const Text('Your PIN goes here'),
+                  enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20)),
                 ),
               ),
-              const SizedBox(),
+            ),
+            const SizedBox(),
 
-              //Enter button
-              ElevatedButton(
-                
+            //Enter button
+            ElevatedButton(
                 style: ButtonStyle(
-                  backgroundColor: WidgetStateProperty.resolveWith<Color>((states) => 
-                  Colors.green.shade200,
-                  
+                  backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                    (states) => Colors.green.shade200,
                   ),
-                  shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-                    
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    )
-                  ),
+                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  )),
                 ),
                 onPressed: () async {
-
                   String id = idController.text.trim();
                   String pin = pinController.text.trim();
 
                   showDialog(
-                    context: context, 
-                    builder: (context){
-                      return  const Center(
-                        child:  SpinKitChasingDots(
+                      context: context,
+                      builder: (context) {
+                        return const Center(
+                            child: SpinKitChasingDots(
                           color: Colors.amber,
                           size: 60,
-                          )
-                        );
-                    }
-                    );
-                  if (id.isNotEmpty && await fetchUserData(id, context.read<UserProvider>())){
-
-                    final currentUser = Provider.of<UserProvider>(context,listen: false).currentUser;
-                    if (pin == currentUser?['pin'].toString()){
-                      //Removing the spinkit
-                      Navigator.of(context).pop();
-                      showDialog(
-                        context: context, 
-                        builder: (context){
-                          Future.delayed(const Duration(seconds: 2),(){
-                            Navigator.of(context).pop();
-                          });
-                          return AlertDialog(
-                            backgroundColor: Colors.red.shade100,
-                            
-                            content: const Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text('Great, you are in'),
-                                Icon(LineAwesomeIcons.thumbs_up_1, 
-                                color: Colors.green, size: 100,),
-                              ],
-                            ),
-                          );
-                        }
-                        );
-                      //Navigating to home page.
-                      Future.delayed(const Duration(seconds: 3),(){
-                        Navigator.push(context,MaterialPageRoute(builder: (context) => const StudentPage()));
+                        ));
                       });
-                    }
-                    else{
+                  if (id.isNotEmpty &&
+                      await fetchUserData(id, context.read<UserProvider>())) {
+                    final currentUser =
+                        Provider.of<UserProvider>(context, listen: false)
+                            .currentUser;
+                    if (pin == currentUser?['pin'].toString()) {
                       //Removing the spinkit
                       Navigator.of(context).pop();
                       showDialog(
-                        context: context, 
-                        builder: (context){
-                          Future.delayed(const Duration(seconds: 2),(){
-                            Navigator.of(context).pop();
+                          context: context,
+                          builder: (context) {
+                            Future.delayed(const Duration(seconds: 2), () {
+                              Navigator.of(context).pop();
+                            });
+                            return AlertDialog(
+                              backgroundColor: Colors.red.shade100,
+                              content: const Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text('Great, you are in'),
+                                  Icon(
+                                    LineAwesomeIcons.thumbs_up_1,
+                                    color: Colors.green,
+                                    size: 100,
+                                  ),
+                                ],
+                              ),
+                            );
                           });
-                          return AlertDialog(
-                            backgroundColor: Colors.red.shade100,
-                            
-                            content: const Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text('Invalid Pin, try again...'),
-                                Icon(LineAwesomeIcons.exclamation_circle, 
-                                color: Colors.red, size: 50,),
-                              ],
-                            ),
-                          );
-                        }
-                        );
+                      //Navigating to home page.
+                      Future.delayed(const Duration(seconds: 3), () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const StudentPage()));
+                      });
+                    } else {
+                      //Removing the spinkit
+                      Navigator.of(context).pop();
+                      showDialog(
+                          context: context,
+                          builder: (context) {
+                            Future.delayed(const Duration(seconds: 2), () {
+                              Navigator.of(context).pop();
+                            });
+                            return AlertDialog(
+                              backgroundColor: Colors.red.shade100,
+                              content: const Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text('Invalid Pin, try again...'),
+                                  Icon(
+                                    LineAwesomeIcons.exclamation_circle,
+                                    color: Colors.red,
+                                    size: 50,
+                                  ),
+                                ],
+                              ),
+                            );
+                          });
                     }
-
-                  }
-                  else{
+                  } else {
                     //Removing the spinkit
                     Navigator.of(context).pop();
-                      showDialog(
-                        context: context, 
-                        builder: (context){
-                          Future.delayed(const Duration(seconds: 2),(){
+                    showDialog(
+                        context: context,
+                        builder: (context) {
+                          Future.delayed(const Duration(seconds: 2), () {
                             Navigator.of(context).pop();
                           });
                           return AlertDialog(
                             backgroundColor: Colors.red.shade100,
-                            
                             content: const Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Text('Student ID does not exist'),
-                                Icon(LineAwesomeIcons.exclamation_circle, 
-                                color: Colors.red, size: 50,),
+                                Icon(
+                                  LineAwesomeIcons.exclamation_circle,
+                                  color: Colors.red,
+                                  size: 50,
+                                ),
                               ],
                             ),
                           );
-                        }
-                        );
+                        });
                   }
-                }, 
-                child: const Text('Enter to Break Q')
-                ),
-              const SizedBox(),
+                },
+                child: const Text('Enter to Break Q')),
+            const SizedBox(),
 
-              //Row for issue report
-               Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  GestureDetector(
+            //Row for issue report
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                GestureDetector(
                     onTap: () {
                       //Navigate to help page
                     },
                     child: const MouseRegion(
-                      cursor: SystemMouseCursors.click,
-                      child: Text('Report an issue? ', style: TextStyle(color: Colors.blue),))
-                    ),
-                ],
-              )
-            ],
-        ),)
-      ),
+                        cursor: SystemMouseCursors.click,
+                        child: Text(
+                          'Report an issue? ',
+                          style: TextStyle(color: Colors.blue),
+                        ))),
+              ],
+            )
+          ],
+        ),
+      )),
     );
   }
 }
-
-

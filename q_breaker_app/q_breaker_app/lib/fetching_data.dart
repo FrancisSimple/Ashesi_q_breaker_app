@@ -232,7 +232,7 @@ class Food{
 
   double getNetCost(){
     netCost = quantity * price;
-    return netCost;
+    return netCost.toDouble();
   }
 
   void changeReadyState(){

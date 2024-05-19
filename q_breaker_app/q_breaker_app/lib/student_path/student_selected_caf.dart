@@ -87,7 +87,7 @@ class _StudentSelectedCafeteriaState extends State<StudentSelectedCafeteria> {
                   }
                   setState(() {
                       currentCost =totalCost;
-                      print(currentCost);
+                      debugPrint(currentCost.toString());
                       }
                         ); 
                   },
@@ -103,7 +103,7 @@ class _StudentSelectedCafeteriaState extends State<StudentSelectedCafeteria> {
                     setState(() {
                       currentCost = totalCost;
                     });
-                    issueReceipt(currentUser['Today\'s balance'], currentCost, currentCaf.foods, currentUser['Name'], currentCaf['name'], currentUser['id']);
+                    issueReceipt(currentUser['Today\'s balance'].toDouble(), currentCost, currentCaf.foods, currentUser['Name'], currentCaf['name'], currentUser['id']);
                   },style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.green.withOpacity(0.9))), child: const Text('Get Receipt')),
                 ],
               ),
